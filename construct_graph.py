@@ -33,7 +33,7 @@ def remove_surrounding_nodes(fname):
     for index,line in enumerate(open(fname)):
         bar.draw(index+1)
         line=line.strip().split(' ')
-        line=line.filter(lambda uid:uid in uids,line)
+        line=filter(lambda uid:uid in uids,line)
         fout.write(' '.join(line)+'\n')
 
 def construct_graph(fname,uids):
@@ -55,11 +55,11 @@ def main():
     fname='first_graph.data'
     construct_graph(fname,uids)
     uids=get_second_uids()
-    fname='secont_graph.data'
+    fname='second_graph.data'
     construct_graph(fname,uids)
 
 if __name__=='__main__':
     #get_first_uids()
     #main()
-    remove_surrounding_nodes('./second_graph.data')
+    remove_surrounding_nodes('first_graph.data')
     print 'Done'
