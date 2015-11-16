@@ -25,6 +25,17 @@ def get_second_uids():
     second_uids=set(second_uids)-first_uids
     return set(second_uids)
 
+def remove_surrounding_nodes(fname):
+    uids=[line.split(' ')[0] for line in open(fname)]
+    uids=set(uids)
+    fout=open('cleaned_'+fname,'w')
+    bar=progress_bar(len(uids))
+    for index,line in enumerate(open(fname)):
+        bar.draw(index+1)
+        line=line.strip().split(' ')
+        line=line.filter(lambda uid:uid in uids,line)
+        fout.write(' '.join(line)+'\n')
+
 def construct_graph(fname,uids):
     print '==========='
     print fname
@@ -49,5 +60,6 @@ def main():
 
 if __name__=='__main__':
     #get_first_uids()
-    main()
+    #main()
+    remove_surrounding_nodes('./second_graph.data')
     print 'Done'
