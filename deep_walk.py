@@ -46,4 +46,4 @@ def deep_walk(total_nodes_count):
     print '\nEmbedding Done'
 
 if __name__=='__main__':
-    deep_walk(10000)
+    deep_walk(10000000)
