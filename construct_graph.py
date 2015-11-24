@@ -22,19 +22,39 @@ def get_second_uids():
     second_uids=[]
     for line in open('./first_graph.data'):
         second_uids+=line.strip().split()[2:]
-    second_uids=set(second_uids)-first_uids
+    second_uids=set(second_uids)#-first_uids
     return set(second_uids)
 
 def remove_surrounding_nodes(fname):
+    print 'Start'
     uids=[line.split(' ')[0] for line in open(fname)]
     uids=set(uids)
     fout=open('cleaned_'+fname,'w')
     bar=progress_bar(len(uids))
     for index,line in enumerate(open(fname)):
-        bar.draw(index+1)
+        #bar.draw(index+1)
+        if index%10000==0:
+            bar.draw(index+1)
+
         line=line.strip().split(' ')
         line=filter(lambda uid:uid in uids,line)
+        if len(line)<=1:
+            continue
         fout.write(' '.join(line)+'\n')
+
+def reverse_graph(fname):
+    re_graph=dict()
+    with open(fname) as graph_file:
+        for line in graph_file:
+            line=line.strip().split(' ')
+            for uid in line[1:]:
+                try:
+                    re_graph[uid].append(line[0])
+                except:
+                    re_graph[uid]=[line[0]]
+    fout=open('reversed_'+fname,'w')
+    for uid,neibors in re_graph.items():
+        fout.write('%s %s\n'%(uid,' '.join(neibors)))
 
 def construct_graph(fname,uids):
     print '==========='
@@ -57,9 +77,17 @@ def main():
     uids=get_second_uids()
     fname='second_graph.data'
     construct_graph(fname,uids)
+    remove_surrounding_nodes('second_graph.data')
+
+def construct_line_format_graph(fname):
+    fout=open('line_'+fname,'w')
+    with open(fname) as graph_file:
+        for line in graph_file:
+            line=line.strip().split(' ')
+            for i in range(1,len(line)):
+                fout.write('%s %s 1\n'%(line[0],line[1]))
 
 if __name__=='__main__':
-    #get_first_uids()
     #main()
-    remove_surrounding_nodes('first_graph.data')
+    construct_line_format_graph('cleaned_second_graph.data')
     print 'Done'
