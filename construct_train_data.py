@@ -48,7 +48,7 @@ def get_label(label_index,label_reg):
         if label==None:
             continue
         labels[uid]=label
-    print len(labels)
+    #print len(labels)
     return labels
 
 def main():

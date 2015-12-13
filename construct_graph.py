@@ -84,10 +84,22 @@ def construct_line_format_graph(fname):
     with open(fname) as graph_file:
         for line in graph_file:
             line=line.strip().split(' ')
-            for i in range(1,len(line)):
-                fout.write('%s %s 1\n'%(line[0],line[1]))
+            for i in xrange(1,len(line)):
+                fout.write('%s %s 1\n'%(line[0],line[i]))
+    print 'LINE format Done'
+
+def construct_my_format_graph(fname):
+    fout=open('my_'+fname,'w')
+    with open(fname) as graph_file:
+        for line in graph_file:
+            line=line.strip().split(' ')
+            for i in xrange(1,len(line)):
+                fout.write('%s %s\n'%(line[0],line[i]))
+    print 'My format Done'
 
 if __name__=='__main__':
     #main()
     construct_line_format_graph('cleaned_second_graph.data')
+    construct_my_format_graph('cleaned_second_graph.data')
+    construct_my_format_graph('reversed_cleaned_second_graph.data')
     print 'Done'
