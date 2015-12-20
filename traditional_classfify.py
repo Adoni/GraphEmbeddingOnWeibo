@@ -40,11 +40,11 @@ def evaluate(labels,embedding_fname,embedding_fname2=None):
     print len(Y)
     print '\t',dict(Counter(Y))
     clf=LogisticRegression()
-    scores=cross_validation.cross_val_score(clf, X, Y, cv=5, scoring='f1_weighted')
+    scores=cross_validation.cross_val_score(clf, X, Y, cv=2, scoring='f1_weighted')
     print("F1 weighted:\t%0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
-    scores=cross_validation.cross_val_score(clf, X, Y, cv=5, scoring='f1_micro')
+    scores=cross_validation.cross_val_score(clf, X, Y, cv=2, scoring='f1_micro')
     print("F1 micro:\t%0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
-    scores=cross_validation.cross_val_score(clf, X, Y, cv=5, scoring='f1_macro')
+    scores=cross_validation.cross_val_score(clf, X, Y, cv=2, scoring='f1_macro')
     print("F1 macro:\t%0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
     if len(set(labels.values()))==2:
         scores=cross_validation.cross_val_score(clf, X, Y, cv=5, scoring='roc_auc')
@@ -53,13 +53,21 @@ def evaluate(labels,embedding_fname,embedding_fname2=None):
     print '==============='
 
 def evaluate_baseline(fname):
-    evaluate(get_label(1,gender_reg),fname1)
-    evaluate(get_label(2,age_reg),fname1)
-    evaluate(get_label(3,location_reg),fname1)
+    evaluate(get_label(1,gender_reg),fname)
+    evaluate(get_label(2,age_reg),fname)
+    evaluate(get_label(3,location_reg),fname)
 
 def evaluate_our_method():
-    fname1='./embedding/neibor_embedding_1_50.data'
-    fname2='./embedding/neibor_embedding_2_50.data'
+    fname1='./embedding/neibor_embedding_1_20_256.data'
+    fname2='./embedding/neibor_embedding_2_20_256.data'
+
+    #evaluate(get_label(1,gender_reg),fname1)
+    #evaluate(get_label(2,age_reg),fname1)
+    #evaluate(get_label(3,location_reg),fname1)
+
+    #evaluate(get_label(1,gender_reg),fname2)
+    #evaluate(get_label(2,age_reg),fname2)
+    #evaluate(get_label(3,location_reg),fname2)
 
     evaluate(get_label(1,gender_reg),fname1,fname2)
     evaluate(get_label(2,age_reg),fname1,fname2)
@@ -67,5 +75,6 @@ def evaluate_our_method():
 
 if __name__=='__main__':
     #evaluate_baseline('./embedding/deepwalk_embedding.data')
-    #evaluate_baseline('./embedding/line_embedding.data')
-    evaluate_our_method()
+    evaluate_baseline('./embedding/line_embedding.data')
+    #evaluate_our_method()
+    print 'Done'
