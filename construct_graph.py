@@ -44,6 +44,10 @@ def remove_surrounding_nodes(fname):
 
 def reverse_graph(fname):
     re_graph=dict()
+    if '/' in fname:
+        out_file_name='/'.join(fname.split('/')[:-1])+'/reversed_'+fname.split('/')[-1]
+    else:
+        out_file_name='reversed_'+fname
     with open(fname) as graph_file:
         for line in graph_file:
             line=line.strip().split(' ')
@@ -52,7 +56,7 @@ def reverse_graph(fname):
                     re_graph[uid].append(line[0])
                 except:
                     re_graph[uid]=[line[0]]
-    fout=open('reversed_'+fname,'w')
+    fout=open(out_file_name,'w')
     for uid,neibors in re_graph.items():
         fout.write('%s %s\n'%(uid,' '.join(neibors)))
 
@@ -99,7 +103,5 @@ def construct_my_format_graph(fname):
 
 if __name__=='__main__':
     #main()
-    construct_line_format_graph('cleaned_second_graph.data')
-    construct_my_format_graph('cleaned_second_graph.data')
-    construct_my_format_graph('reversed_cleaned_second_graph.data')
+    reverse_graph('./graph_data/first_graph.data')
     print 'Done'

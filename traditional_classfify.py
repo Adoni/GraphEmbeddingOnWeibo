@@ -2,38 +2,25 @@ from construct_train_data import *
 from sklearn.linear_model import LogisticRegression
 from sklearn import cross_validation
 from sklearn.svm import SVC
+import json
+from utils import thread_load
 
-def get_embedding(uids,fname):
-    uids=set(uids)
-    embedding=dict()
-    f=open(fname)
-    line=f.readline()
-    embedding_size=int(line.strip().split(' ')[1])
-    for line in f:
-        line=line.strip().split(' ')
-        if line[0] in uids:
-            if len(line)==embedding_size+1:
-                embedding[line[0]]=map(lambda v:float(v),line[1:])
-    return embedding
+def get_simple_embedding(fname):
+    return thread_load(fname)
 
-def get_combined_embedding(uids,fname1,fname2):
-    embedding1=get_embedding(uids,fname1)
-    embedding2=get_embedding(uids,fname2)
+def get_neibor_embedding(fname):
+    data=thread_load(fname)
     embedding=dict()
-    for uid in embedding1:
-        try:
-            embedding[uid]=embedding1[uid]+embedding2[uid]
-        except:
+    for uid,e in data.items():
+        if len(e)<4:
             continue
+        #embedding[uid]=e[0]+e[1]+e[2]+e[3]
+        embedding[uid]=e[2]+e[3]
     return embedding
 
-def evaluate(labels,embedding_fname,embedding_fname2=None):
+def evaluate(labels,embedding):
     print '======='
     from collections import Counter
-    if embedding_fname2==None:
-        embedding=get_embedding(labels.keys(),embedding_fname)
-    else:
-        embedding=get_combined_embedding(labels.keys(),embedding_fname,embedding_fname2)
     uids=list(set(embedding.keys()) & set(labels.keys()))
     X=map(lambda uid:embedding[uid],uids)
     Y=map(lambda uid:labels[uid],uids)
@@ -53,28 +40,19 @@ def evaluate(labels,embedding_fname,embedding_fname2=None):
     print '==============='
 
 def evaluate_baseline(fname):
-    evaluate(get_label(1,gender_reg),fname)
-    evaluate(get_label(2,age_reg),fname)
-    evaluate(get_label(3,location_reg),fname)
+    embedding=get_simple_embedding(fname)
+    evaluate(get_label(1,gender_reg),embedding)
+    evaluate(get_label(2,age_reg),embedding)
+    evaluate(get_label(3,location_reg),embedding)
 
 def evaluate_our_method():
-    fname1='./embedding/neibor_embedding_1_20_256.data'
-    fname2='./embedding/neibor_embedding_2_20_256.data'
-
-    #evaluate(get_label(1,gender_reg),fname1)
-    #evaluate(get_label(2,age_reg),fname1)
-    #evaluate(get_label(3,location_reg),fname1)
-
-    #evaluate(get_label(1,gender_reg),fname2)
-    #evaluate(get_label(2,age_reg),fname2)
-    #evaluate(get_label(3,location_reg),fname2)
-
-    evaluate(get_label(1,gender_reg),fname1,fname2)
-    evaluate(get_label(2,age_reg),fname1,fname2)
-    evaluate(get_label(3,location_reg),fname1,fname2)
+    embedding=get_neibor_embedding('./embedding/user_embedding_using_neibors.data.json')
+    evaluate(get_label(1,gender_reg),embedding)
+    evaluate(get_label(2,age_reg),embedding)
+    evaluate(get_label(3,location_reg),embedding)
 
 if __name__=='__main__':
-    #evaluate_baseline('./embedding/deepwalk_embedding.data')
-    evaluate_baseline('./embedding/line_embedding.data')
-    #evaluate_our_method()
+    #evaluate_baseline('./embedding/user_embedding_using_deepwalk.data.json')
+    #evaluate_baseline('./embedding/user_embedding_using_line.data.json')
+    evaluate_our_method()
     print 'Done'
