@@ -15,18 +15,22 @@ def get_neibor_embedding(fname):
         if len(e)<4:
             continue
         #embedding[uid]=e[0]+e[1]+e[2]+e[3]
-        embedding[uid]=e[2]+e[3]
+        embedding[uid]=e[0]+e[1]
     return embedding
 
 def evaluate(labels,embedding):
-    print '======='
+    #print '======='
     from collections import Counter
     uids=list(set(embedding.keys()) & set(labels.keys()))
     X=map(lambda uid:embedding[uid],uids)
     Y=map(lambda uid:labels[uid],uids)
-    print len(Y)
+    #print len(Y)
     print '\t',dict(Counter(Y))
     clf=LogisticRegression()
+    scores=cross_validation.cross_val_score(clf, X, Y, cv=2, scoring='precision')
+    print("Precision:\t%0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+    scores=cross_validation.cross_val_score(clf, X, Y, cv=2, scoring='recall')
+    print("Recall:\t%0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
     scores=cross_validation.cross_val_score(clf, X, Y, cv=2, scoring='f1_weighted')
     print("F1 weighted:\t%0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
     scores=cross_validation.cross_val_score(clf, X, Y, cv=2, scoring='f1_micro')
@@ -37,22 +41,23 @@ def evaluate(labels,embedding):
         scores=cross_validation.cross_val_score(clf, X, Y, cv=5, scoring='roc_auc')
         print("ROC_AUC:\t%0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
-    print '==============='
 
 def evaluate_baseline(fname):
+    print '==========='
     embedding=get_simple_embedding(fname)
     evaluate(get_label(1,gender_reg),embedding)
     evaluate(get_label(2,age_reg),embedding)
     evaluate(get_label(3,location_reg),embedding)
 
 def evaluate_our_method():
+    print '==========='
     embedding=get_neibor_embedding('./embedding/user_embedding_using_neibors.data.json')
     evaluate(get_label(1,gender_reg),embedding)
     evaluate(get_label(2,age_reg),embedding)
     evaluate(get_label(3,location_reg),embedding)
 
 if __name__=='__main__':
-    #evaluate_baseline('./embedding/user_embedding_using_deepwalk.data.json')
-    #evaluate_baseline('./embedding/user_embedding_using_line.data.json')
+    evaluate_baseline('./embedding/user_embedding_using_deepwalk.data.json')
+    evaluate_baseline('./embedding/user_embedding_using_line.data.json')
     evaluate_our_method()
     print 'Done'
