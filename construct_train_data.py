@@ -89,10 +89,10 @@ def get_user_embedding_on_simple_embedding(embedding_file,out_filename):
     with open(out_filename, 'w') as outfile:
         json.dump(user_embedding, outfile)
 
-def get_user_embedding_with_friends():
+def get_user_embedding_with_friends(iter_count):
     uids=[line.strip().split(' ')[0] for line in open ('./graph_data/cleaned_first_graph.data')]
-    embedding_file='./embedding/neibor_embedding_1_20.data.dump.json'
-    re_embedding_file='./embedding/neibor_embedding_2_20.data.dump.json'
+    embedding_file='./embedding/neibor_embedding_1_%d.data.json'%iter_count
+    re_embedding_file='./embedding/neibor_embedding_2_%d.data.json'%iter_count
     graph_file='./graph_data/cleaned_second_graph.data.small.json'
     re_graph_file='./graph_data/reversed_cleaned_second_graph.data.small.json'
     graph,re_graph,embedding,re_embedding=load([graph_file,re_graph_file,embedding_file,re_embedding_file])
@@ -143,9 +143,11 @@ def get_user_embedding_with_friends():
 def main():
     #get_label(3,location_reg)
     #get_user_embedding()
-    #get_user_embedding_with_friends()
-    get_user_embedding_on_simple_embedding('./embedding/deepwalk_embedding.data.json','./embedding/user_embedding_using_deepwalk.data.json')
-    get_user_embedding_on_simple_embedding('./embedding/line_embedding.data.json','./embedding/user_embedding_using_line.data.json')
+    get_user_embedding_with_friends(10)
+    get_user_embedding_with_friends(15)
+    get_user_embedding_with_friends(50)
+    #get_user_embedding_on_simple_embedding('./embedding/deepwalk_embedding.data.json','./embedding/user_embedding_using_deepwalk.data.json')
+    #get_user_embedding_on_simple_embedding('./embedding/line_embedding.data.json','./embedding/user_embedding_using_line.data.json')
     pass
 
 if __name__=='__main__':
