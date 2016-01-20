@@ -121,29 +121,36 @@ def get_user_embedding_with_friends(iter_count):
         #2. append user's reversed embedding
         user_embedding[uid].append(re_embedding[uid])
         #3. append user's embedding from who he or her follows
-        e=[]
+        e1=[]
+        e2=[]
         for friend in graph[uid]:
             try:
-                e.append(re_embedding[friend])
+                e1.append(re_embedding[friend])
+                e2.append(embedding[friend])
             except:
                 continue
-        user_embedding[uid].append(list(numpy.mean(e,axis=0)))
+        user_embedding[uid].append(list(numpy.mean(e1,axis=0)))
+        user_embedding[uid].append(list(numpy.mean(e2,axis=0)))
         #4. append user's embedding from who he or her follows
-        e=[]
+        e1=[]
+        e2=[]
         for friend in re_graph[uid]:
             try:
-                e.append(embedding[friend])
+                e1.append(embedding[friend])
+                e2.append(re_embedding[friend])
             except:
                 continue
-        user_embedding[uid].append(list(numpy.mean(e,axis=0)))
+        user_embedding[uid].append(list(numpy.mean(e1,axis=0)))
+        user_embedding[uid].append(list(numpy.mean(e2,axis=0)))
 
-    with open('./embedding/user_embedding.data.json', 'w') as outfile:
+    with open('./embedding/user_embedding_using_neibors_%d.data.json'%iter_count, 'w') as outfile:
         json.dump(user_embedding, outfile)
 
 def main():
     #get_label(3,location_reg)
     #get_user_embedding()
     get_user_embedding_with_friends(10)
+    get_user_embedding_with_friends(20)
     get_user_embedding_with_friends(15)
     get_user_embedding_with_friends(50)
     #get_user_embedding_on_simple_embedding('./embedding/deepwalk_embedding.data.json','./embedding/user_embedding_using_deepwalk.data.json')

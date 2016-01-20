@@ -1,9 +1,11 @@
+#coding:utf8
 import json
 from small_utils.vector_reader import read_vectors
 from multiprocessing import Process
 import time
 
 def dump_vector(in_file_name):
+#将embedding数据存储为json格式
     print 'Dump file %s'%in_file_name
     out_file_name=in_file_name+'.json'
     vector=read_vectors(in_file_name, as_dict=True, as_list=True)
@@ -11,6 +13,8 @@ def dump_vector(in_file_name):
         json.dump(vector, outfile)
 
 def dump_small_graph(in_file_name):
+#small_graph中存储了first graph中所有的uid的所有朋友，这些朋友可能是first graph中的也可能是second graph中的
+#本函数将small graph读入成字典形式并存储为json格式
     print 'Dump file %s'%in_file_name
     t=time.time()
     graph=dict()
@@ -31,6 +35,7 @@ def dump_small_graph(in_file_name):
     print time.time()-t
 
 def dump_graph(in_file_name):
+#本函数将graph读入成字典形式并存储为json格式
     print 'Dump file %s'%in_file_name
     t=time.time()
     graph=dict()
@@ -64,6 +69,7 @@ def dump_weight():
         json.dump(weights, outfile)
 
 def dump(f,in_file_name):
+#多线程序列化,传入函数名和该函数的参数
     p=Process(target=f,args=[in_file_name,])
     p.start()
 

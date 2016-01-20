@@ -22,7 +22,8 @@ def dump(labels,embedding,fname):
     #numpy.savetxt(fname+'_Y.data',Y,fmt='%d')
 
 if __name__=='__main__':
-    fname='./embedding/user_embedding_using_neibors.data.json'
+    iter_count=20
+    fname='./embedding/user_embedding_using_neibors_%d.data.json'%iter_count
     #embedding=get_simple_embedding(fname)
     embedding=get_neibor_embedding(fname)
-    dump(get_label(1,gender_reg),embedding,'./training_data/neibor_gender')
+    dump(get_label(1,gender_reg),embedding,'./training_data/neibor_gender_%d'%iter_count)
