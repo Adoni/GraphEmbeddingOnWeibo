@@ -60,7 +60,12 @@ def evaluate(labels, embedding):
     print("# Tuning hyper-parameters for f1_weighted")
     print()
 
-    clf = GridSearchCV(SVC(C=1), tuned_parameters, cv=5, scoring='f1_weighted', n_jobs=10)
+    clf = GridSearchCV(
+        SVC(C=1),
+        tuned_parameters,
+        cv=5,
+        scoring='f1_weighted',
+        n_jobs=10)
     clf.fit(X_train, y_train)
     print("Best parameters set found on development set:")
     print()

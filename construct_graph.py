@@ -51,8 +51,11 @@ def remove_surrounding_nodes(fname):
 def reverse_graph(fname):
     re_graph = dict()
     if '/' in fname:
-        out_file_name = '/'.join(fname.split(
-            '/')[:-1]) + '/reversed_' + fname.split('/')[-1]
+        out_file_name = '/'.join(
+            fname.split(
+                '/'
+            )[:-1]
+        ) + '/reversed_' + fname.split('/')[-1]
     else:
         out_file_name = 'reversed_' + fname
     with open(fname) as graph_file:

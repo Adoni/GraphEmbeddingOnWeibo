@@ -58,8 +58,9 @@ def deep_walk(total_nodes_count=None):
         bar.draw(i + 1)
     print '\nEmbedding...'
     command = '~/word2vec/word2vec -train %s -output %s -cbow 0 -size 100 -window %d -negative 1 -hs 0 -sample 1e-3 \
-    -min-count 0 -threads 10 -binary 0' % (raw_file_name, embedding_file_name,
-                                           5)
+    -min-count 0 -threads 10 -binary 0' % (
+        raw_file_name, embedding_file_name, 5
+    )
     print command
     os.system(command)
     print '\nEmbedding Done'

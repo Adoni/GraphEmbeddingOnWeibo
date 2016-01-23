@@ -29,6 +29,6 @@ if __name__ == '__main__':
     #embedding=get_simple_embedding(fname)
     embedding = get_neibor_embedding(fname)
     dump(
-        get_label(1, gender_reg), embedding, './training_data/neibor_gender_%d'
-        % iter_count
+        get_label(1, gender_reg), embedding,
+        './training_data/neibor_gender_%d' % iter_count
     )

@@ -111,7 +111,8 @@ def get_user_embedding_with_friends(iter_count):
     graph_file = './graph_data/cleaned_second_graph.data.small.json'
     re_graph_file = './graph_data/reversed_cleaned_second_graph.data.small.json'
     graph, re_graph, embedding, re_embedding = load(
-        [graph_file, re_graph_file, embedding_file, re_embedding_file])
+        [graph_file, re_graph_file, embedding_file, re_embedding_file]
+    )
     #graph,re_graph=load([graph_file,re_graph_file])
     user_embedding = dict()
     print 'Start'
@@ -159,8 +160,10 @@ def get_user_embedding_with_friends(iter_count):
         user_embedding[uid].append(list(numpy.mean(e1, axis=0)))
         user_embedding[uid].append(list(numpy.mean(e2, axis=0)))
 
-    with open('./embedding/user_embedding_using_neibors_%d.data.json' %
-              iter_count, 'w') as outfile:
+    with open(
+        './embedding/user_embedding_using_neibors_%d.data.json' % iter_count,
+        'w'
+    ) as outfile:
         json.dump(user_embedding, outfile)
 
 
