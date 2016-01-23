@@ -5,10 +5,12 @@ from sklearn.svm import SVC
 from sklearn.cross_validation import StratifiedShuffleSplit
 from sklearn.grid_search import GridSearchCV
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report
 import json
 from utils import thread_load
 import numpy as np
 from sklearn.cross_validation import train_test_split
+import sys
 
 
 def get_simple_embedding(fname):
@@ -58,7 +60,7 @@ def evaluate(labels, embedding):
     print("# Tuning hyper-parameters for f1_weighted")
     print()
 
-    clf = GridSearchCV(SVC(C=1), tuned_parameters, cv=5, scoring='f1_weighted')
+    clf = GridSearchCV(SVC(C=1), tuned_parameters, cv=5, scoring='f1_weighted', n_jobs=10)
     clf.fit(X_train, y_train)
     print("Best parameters set found on development set:")
     print()
@@ -78,8 +80,9 @@ def evaluate(labels, embedding):
     print("The scores are computed on the full evaluation set.")
     print()
     y_true, y_pred = y_test, clf.predict(X_test)
-    print(classification_report(y_true, y_pred))
+    print(classification_report(y_true, y_pred, digit=3))
     print()
+    sys.stdout.flush()
 
 
 def evaluate_baseline(fname):
