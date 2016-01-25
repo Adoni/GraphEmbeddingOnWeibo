@@ -7,7 +7,7 @@ import json
 import numpy
 
 
-def dump(labels, embedding, fname):
+def dump_for_cpp(labels, embedding, fname):
     uids = list(set(embedding.keys()) & set(labels.keys()))
     X = map(lambda uid: embedding[uid], uids)
     Y = map(lambda uid: labels[uid], uids)
@@ -23,7 +23,7 @@ def dump(labels, embedding, fname):
     #numpy.savetxt(fname+'_Y.data',Y,fmt='%d')
 
 
-if __name__ == '__main__':
+def main():
     iter_count = 20
     fname = './embedding/user_embedding_using_neibors_%d.data.json' % iter_count
     #embedding=get_simple_embedding(fname)
@@ -32,3 +32,18 @@ if __name__ == '__main__':
         get_label(1, gender_reg), embedding,
         './training_data/neibor_gender_%d' % iter_count
     )
+
+def count_uids():
+    f=open('./graph_data/weights.data')
+    uids=[]
+    while 1:
+        line=f.readline()
+        uids.append(line.strip())
+        if line=='':
+            break
+        line=f.readline()
+        line=f.readline()
+    print len(uids)-len(set(uids))
+
+if __name__ == '__main__':
+    count_uids()

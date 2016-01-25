@@ -118,5 +118,5 @@ def construct_my_format_graph(fname):
 
 if __name__ == '__main__':
     #main()
-    reverse_graph('./graph_data/first_graph.data')
+    #reverse_graph('./graph_data/first_graph.data')
     print 'Done'

@@ -23,13 +23,13 @@ def get_neibor_embedding(fname):
     for uid, e in data.items():
         if len(e) < 6:
             continue
-        embedding[uid] = e[0] + e[1] + e[2] + e[3]
+        embedding[uid] = list(e[0]) + list(e[1]) + list(e[2]) + list(e[3]) + list(e[4]) + list(e[5])
+        embedding[uid] = list(e[0]) + list(e[1]) + list(e[3]) + list(e[5])
         #embedding[uid]=e[0]+e[1]
     return embedding
 
 
 def evaluate(labels, embedding):
-    #print '======='
     from collections import Counter
     uids = list(set(embedding.keys()) & set(labels.keys()))
     X = map(lambda uid: embedding[uid], uids)
@@ -89,6 +89,19 @@ def evaluate(labels, embedding):
     print()
     sys.stdout.flush()
 
+def simple_evaluate(labels, embedding):
+    #simple_evaluate function uses default params without any params tuning
+    from collections import Counter
+    uids = list(set(embedding.keys()) & set(labels.keys()))
+    X = map(lambda uid: embedding[uid], uids)
+    Y = map(lambda uid: labels[uid], uids)
+    print '\t', dict(Counter(Y))
+    clf=LogisticRegression()
+    score_names=['precision_weighted','recall_weighted','f1_weighted','f1_micro','f1_macro','roc_auc']
+    for score_name in score_names:
+        scores=cross_validation.cross_val_score(clf, X, Y, cv=2, scoring=score_name)
+        print("%s:\t%0.2f (+/- %0.2f)" % (score_name, scores.mean(), scores.std() * 2))
+    sys.stdout.flush()
 
 def evaluate_baseline(fname):
     if 'deepwalk' in fname:
@@ -106,16 +119,17 @@ def evaluate_our_method(iter_count=20):
     embedding = get_neibor_embedding(
         './embedding/user_embedding_using_neibors_%d.data.json' % iter_count
     )
-    evaluate(get_label(1, gender_reg), embedding)
-    evaluate(get_label(2, age_reg), embedding)
-    evaluate(get_label(3, location_reg), embedding)
+    #evaluate(get_label(1, gender_reg), embedding)
+    #evaluate(get_label(2, age_reg), embedding)
+    #evaluate(get_label(3, location_reg), embedding)
+    simple_evaluate(get_label(2, age_reg), embedding)
 
 
 if __name__ == '__main__':
-    evaluate_baseline('./embedding/user_embedding_using_deepwalk.data.json')
-    evaluate_baseline('./embedding/user_embedding_using_line.data.json')
-    evaluate_our_method(iter_count=10)
-    evaluate_our_method(iter_count=15)
+    #evaluate_baseline('./embedding/user_embedding_using_deepwalk.data.json')
+    #evaluate_baseline('./embedding/user_embedding_using_line.data.json')
+    #evaluate_our_method(iter_count=10)
+    #evaluate_our_method(iter_count=15)
     evaluate_our_method(iter_count=20)
-    evaluate_our_method(iter_count=50)
+    #evaluate_our_method(iter_count=50)
     print 'Done'

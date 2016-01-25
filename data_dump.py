@@ -55,30 +55,6 @@ def dump_graph(in_file_name):
     print time.time() - t
 
 
-def dump_weight():
-    uids = [
-        line.strip().split(' ')[0]
-        for line in open('./graph_data/cleaned_first_graph.data')
-    ]
-    with open('./graph_data/cleaned_second_graph.data.dump.json') as data_file:
-        graph = json.load(data_file)
-    print len(graph.keys())
-    weights = dict()
-    for uid in uids:
-        neibors = set(graph[uid])
-        weight = dict()
-        for n in neibors:
-            try:
-                w = len(set(graph[n]) & neibors)
-                if w > 0:
-                    weight[n] = w
-            except Exception as e:
-                continue
-        weights[uid] = weight
-    with open('./graph_data/weight.data.dump.json', 'w') as outfile:
-        json.dump(weights, outfile)
-
-
 def dump(f, in_file_name):
     #多线程序列化,传入函数名和该函数的参数
     p = Process(target=f, args=[in_file_name, ])

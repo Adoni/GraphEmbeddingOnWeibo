@@ -101,11 +101,24 @@ def get_user_embedding_on_simple_embedding(embedding_file, out_filename):
         json.dump(user_embedding, outfile)
 
 
+def get_weights():
+    f=open('./graph_data/weights.data')
+    weights=dict()
+    while 1:
+        uid=f.readline().strip()
+        if uid=='':
+            break
+        neibors=f.readline().strip().split(' ')
+        weight=map(lambda x:int(x), f.readline().strip().split(' '))
+        weights[uid]=dict(zip(neibors,weight))
+    return weights
+
 def get_user_embedding_with_friends(iter_count):
     uids = [
         line.strip().split(' ')[0]
         for line in open('./graph_data/cleaned_first_graph.data')
     ]
+    weights=get_weights()
     embedding_file = './embedding/neibor_embedding_1_%d.data.json' % iter_count
     re_embedding_file = './embedding/neibor_embedding_2_%d.data.json' % iter_count
     graph_file = './graph_data/cleaned_second_graph.data.small.json'
@@ -180,5 +193,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    #main()
+    get_weights()
     print 'Done'
