@@ -2,6 +2,7 @@
 import json
 from multiprocessing.dummy import Pool as ThreadPool
 import numpy
+import random
 
 
 def get_location_labels():
@@ -113,6 +114,15 @@ def get_weights():
         weights[uid]=dict(zip(neibors,weight))
     return weights
 
+def construct_friends_embedding_with_certain_count(friend_embeddings):
+    counts=[user_embedding_using_neibors_50.data.j]
+    counts=[5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 350, 390]
+    result=[]
+    for count in counts:
+        tmp_embedding=random.sample(friend_embeddings,count)
+        result.append(list(numpy.mean(tmp_embedding, axis=0)))
+    return result
+
 def get_user_embedding_with_friends(iter_count):
     uids = [
         line.strip().split(' ')[0]
@@ -159,8 +169,10 @@ def get_user_embedding_with_friends(iter_count):
                 e2.append(embedding[friend])
             except:
                 continue
-        user_embedding[uid].append(list(numpy.mean(e1, axis=0)))
-        user_embedding[uid].append(list(numpy.mean(e2, axis=0)))
+        #user_embedding[uid].append(list(numpy.mean(e1, axis=0)))
+        user_embedding[uid].append(construct_friends_embedding_with_certain_count(e1))
+        #user_embedding[uid].append(list(numpy.mean(e2, axis=0)))
+        user_embedding[uid].append(construct_friends_embedding_with_certain_count(e2))
         #4. append user's embedding from who he or her follows
         e1 = []
         e2 = []
@@ -170,8 +182,10 @@ def get_user_embedding_with_friends(iter_count):
                 e2.append(re_embedding[friend])
             except:
                 continue
-        user_embedding[uid].append(list(numpy.mean(e1, axis=0)))
-        user_embedding[uid].append(list(numpy.mean(e2, axis=0)))
+        #user_embedding[uid].append(list(numpy.mean(e1, axis=0)))
+        user_embedding[uid].append(construct_friends_embedding_with_certain_count(e1))
+        #user_embedding[uid].append(list(numpy.mean(e2, axis=0)))
+        user_embedding[uid].append(construct_friends_embedding_with_certain_count(e2))
 
     with open(
         './embedding/user_embedding_using_neibors_%d.data.json' % iter_count,
@@ -183,16 +197,16 @@ def get_user_embedding_with_friends(iter_count):
 def main():
     #get_label(3,location_reg)
     #get_user_embedding()
-    get_user_embedding_with_friends(10)
+    #get_user_embedding_with_friends(10)
     get_user_embedding_with_friends(20)
-    get_user_embedding_with_friends(15)
-    get_user_embedding_with_friends(50)
+    #get_user_embedding_with_friends(15)
+    #get_user_embedding_with_friends(50)
     #get_user_embedding_on_simple_embedding('./embedding/deepwalk_embedding.data.json','./embedding/user_embedding_using_deepwalk.data.json')
     #get_user_embedding_on_simple_embedding('./embedding/line_embedding.data.json','./embedding/user_embedding_using_line.data.json')
     pass
 
 
 if __name__ == '__main__':
-    #main()
-    get_weights()
+    main()
+    #get_weights()
     print 'Done'
