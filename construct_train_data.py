@@ -183,16 +183,18 @@ def get_user_embedding_with_friends(iter_count):
 def main():
     #get_label(3,location_reg)
     #get_user_embedding()
-    get_user_embedding_with_friends(10)
-    get_user_embedding_with_friends(20)
-    get_user_embedding_with_friends(15)
-    get_user_embedding_with_friends(50)
+    #get_user_embedding_with_friends(10)
+    #get_user_embedding_with_friends(15)
+    #get_user_embedding_with_friends(20)
+    get_user_embedding_with_friends(25)
+    get_user_embedding_with_friends(30)
+    #get_user_embedding_with_friends(50)
     #get_user_embedding_on_simple_embedding('./embedding/deepwalk_embedding.data.json','./embedding/user_embedding_using_deepwalk.data.json')
     #get_user_embedding_on_simple_embedding('./embedding/line_embedding.data.json','./embedding/user_embedding_using_line.data.json')
     pass
 
 
 if __name__ == '__main__':
-    #main()
-    get_weights()
+    main()
+    #get_weights()
     print 'Done'

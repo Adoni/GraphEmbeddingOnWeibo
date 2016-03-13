@@ -24,7 +24,7 @@ def get_neibor_embedding(fname):
         if len(e) < 6:
             continue
         embedding[uid] = list(e[0]) + list(e[1]) + list(e[2]) + list(e[3]) + list(e[4]) + list(e[5])
-        embedding[uid] = list(e[0]) + list(e[1]) + list(e[3]) + list(e[5])
+        #embedding[uid] = list(e[0]) + list(e[1]) + list(e[3]) + list(e[5])
         #embedding[uid]=e[0]+e[1]
     return embedding
 
@@ -50,11 +50,11 @@ def evaluate(labels, embedding):
     tuned_parameters = [
         {
             'kernel': ['rbf'],
-            'gamma': [1e-3, 1e-4],
-            'C': [1, 10, 100, 1000]
+            'gamma': [1e-2, 1e-3, 1e-4],
+            'C': [1, 10, 100, 500, 1000]
         }, {
             'kernel': ['linear'],
-            'C': [1, 10, 100, 1000]
+            'C': [1, 10, 100, 500, 1000]
         }
     ]
     print("# Tuning hyper-parameters for f1_weighted")
@@ -65,7 +65,7 @@ def evaluate(labels, embedding):
         tuned_parameters,
         cv=5,
         scoring='f1_weighted',
-        n_jobs=10)
+        n_jobs=12)
     clf.fit(X_train, y_train)
     print("Best parameters set found on development set:")
     print()
@@ -85,7 +85,7 @@ def evaluate(labels, embedding):
     print("The scores are computed on the full evaluation set.")
     print()
     y_true, y_pred = y_test, clf.predict(X_test)
-    print(classification_report(y_true, y_pred, digit=3))
+    print(classification_report(y_true, y_pred, digits=3))
     print()
     sys.stdout.flush()
 
@@ -119,10 +119,10 @@ def evaluate_our_method(iter_count=20):
     embedding = get_neibor_embedding(
         './embedding/user_embedding_using_neibors_%d.data.json' % iter_count
     )
-    #evaluate(get_label(1, gender_reg), embedding)
-    #evaluate(get_label(2, age_reg), embedding)
-    #evaluate(get_label(3, location_reg), embedding)
-    simple_evaluate(get_label(2, age_reg), embedding)
+    evaluate(get_label(1, gender_reg), embedding)
+    evaluate(get_label(2, age_reg), embedding)
+    evaluate(get_label(3, location_reg), embedding)
+    #simple_evaluate(get_label(2, age_reg), embedding)
 
 
 if __name__ == '__main__':
@@ -130,6 +130,6 @@ if __name__ == '__main__':
     #evaluate_baseline('./embedding/user_embedding_using_line.data.json')
     #evaluate_our_method(iter_count=10)
     #evaluate_our_method(iter_count=15)
-    evaluate_our_method(iter_count=20)
-    #evaluate_our_method(iter_count=50)
+    evaluate_our_method(iter_count=25)
+    evaluate_our_method(iter_count=30)
     print 'Done'
