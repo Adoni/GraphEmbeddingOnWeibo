@@ -13,6 +13,7 @@ def dump_for_cpp(labels, embedding, fname):
     Y = map(lambda uid: labels[uid], uids)
     X = map(lambda x: map(lambda d: str(d), x), X)
     Y = map(lambda y: str(y), Y)
+    print len(X)
     fout = open(fname + '_X.data', 'w')
     fout.write('%d %d\n' % (len(X), len(X[0])))
     fout.write('\n'.join(map(lambda x: ' '.join(x), X)))
@@ -28,9 +29,17 @@ def main():
     fname = './embedding/user_embedding_using_neibors_%d.data.json' % iter_count
     #embedding=get_simple_embedding(fname)
     embedding = get_neibor_embedding(fname)
-    dump(
+    dump_for_cpp(
         get_label(1, gender_reg), embedding,
         './training_data/neibor_gender_%d' % iter_count
+    )
+    dump_for_cpp(
+        get_label(2, age_reg), embedding,
+        './training_data/neibor_age_%d' % iter_count
+    )
+    dump_for_cpp(
+        get_label(3, location_reg), embedding,
+        './training_data/neibor_location_%d' % iter_count
     )
 
 def count_uids():
@@ -46,4 +55,6 @@ def count_uids():
     print len(uids)-len(set(uids))
 
 if __name__ == '__main__':
-    count_uids()
+    #count_uids()
+    main()
+    print 'Done'

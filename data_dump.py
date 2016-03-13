@@ -79,6 +79,10 @@ if __name__ == '__main__':
     #dump(dump_vector,'./embedding/neibor_embedding_2_10.data')
     #dump(dump_vector,'./embedding/neibor_embedding_1_15.data')
     #dump(dump_vector,'./embedding/neibor_embedding_2_15.data')
-    dump(dump_vector, './embedding/neibor_embedding_1_50.data')
-    dump(dump_vector, './embedding/neibor_embedding_2_50.data')
+    #dump(dump_vector, './embedding/neibor_embedding_1_25.data')
+    #dump(dump_vector, './embedding/neibor_embedding_2_25.data')
+    dump(dump_vector, './embedding/neibor_embedding_1_30.data')
+    dump(dump_vector, './embedding/neibor_embedding_2_30.data')
+    #dump(dump_vector, './embedding/neibor_embedding_1_50.data')
+    #dump(dump_vector, './embedding/neibor_embedding_2_50.data')
     print 'Done'
