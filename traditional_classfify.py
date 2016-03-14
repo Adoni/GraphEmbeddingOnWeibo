@@ -23,6 +23,7 @@ def get_neibor_embedding(fname):
     for uid, e in data.items():
         if len(e) < 6:
             continue
+        #embedding[uid] = list(e[0]) + list(e[1]) + list(e[2]) + list(e[3]) + list(e[4]) + list(e[5])
         embedding[uid] = list(e[0]) + list(e[1]) + list(e[2]) + list(e[3]) + list(e[4]) + list(e[5])
         #embedding[uid] = list(e[0]) + list(e[1]) + list(e[3]) + list(e[5])
         #embedding[uid]=e[0]+e[1]
