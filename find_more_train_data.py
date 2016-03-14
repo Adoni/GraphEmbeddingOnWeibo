@@ -1,0 +1,26 @@
+def get_second_uids():
+    uids=[]
+    for line in open('./graph_data/cleaned_second_graph.data'):
+        uids.append(line[0:line.find(' ')])
+    return set(uids)
+
+def enlarge_dataset():
+    uids=get_second_uids()
+    f=open('./expended_user_profile','a')
+    keywords=['gender', 'birthYear', 'location']
+    for index in [1,2,3]:
+        file_name='/users3/zyli/hbase_api/node04/weibo_sina_part%d'%index
+        for line in open(file_name):
+            uid=line[0:line.find(' ')]
+            if line[0] not in uids:
+                continue
+            profile=[]
+            for key in keywords:
+                try:
+                    l=line.find(key)
+                    v=line[l:line.find(' ',l)]
+                    profile.append(v)
+                except:
+                    continue
+            f.write(uid+'||'.join(profile))
+
