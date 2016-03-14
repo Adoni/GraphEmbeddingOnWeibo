@@ -115,12 +115,14 @@ def get_weights():
     return weights
 
 def construct_friends_embedding_with_certain_count(friend_embeddings):
-    counts=[user_embedding_using_neibors_50.data.j]
     counts=[5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 350, 390]
     result=[]
     for count in counts:
-        tmp_embedding=random.sample(friend_embeddings,count)
-        result.append(list(numpy.mean(tmp_embedding, axis=0)))
+        if count<=len(friend_embeddings):
+            tmp_embedding=random.sample(friend_embeddings,count)
+            result.append(list(numpy.mean(tmp_embedding, axis=0)))
+        else:
+            result.append([])
     return result
 
 def get_user_embedding_with_friends(iter_count):
@@ -140,7 +142,6 @@ def get_user_embedding_with_friends(iter_count):
     user_embedding = dict()
     print 'Start'
     for index, uid in enumerate(uids):
-        print index
         if uid not in graph:
             print 'H1', uid
             continue
@@ -187,10 +188,7 @@ def get_user_embedding_with_friends(iter_count):
         #user_embedding[uid].append(list(numpy.mean(e2, axis=0)))
         user_embedding[uid].append(construct_friends_embedding_with_certain_count(e2))
 
-    with open(
-        './embedding/user_embedding_using_neibors_%d.data.json' % iter_count,
-        'w'
-    ) as outfile:
+    with open('./embedding/user_embedding_using_neibors_%d.data.json' % iter_count,'w') as outfile:
         json.dump(user_embedding, outfile)
 
 
