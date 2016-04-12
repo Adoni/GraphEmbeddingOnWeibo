@@ -56,9 +56,9 @@ def location_reg(v):
         return None
 
 
-def get_label(label_index, label_reg):
+def get_label(weibsite, label_index, label_reg):
     labels = dict()
-    for line in open('./user_attributes.data'):
+    for line in open('./weibsite_user_attributes.data'):
         line = line.strip().split('||')
         uid = line[0]
         label = label_reg(line[label_index])

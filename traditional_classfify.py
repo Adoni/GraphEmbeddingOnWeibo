@@ -101,7 +101,7 @@ def simple_evaluate(labels, embedding, params):
         clf=SVC(C=params['C'],kernel=params['kernel'])
     else:
         clf=SVC(C=params['C'],kernel=params['kernel'],gamma=params['gamma'])
-    #clf=LogisticRegression()
+    clf=LogisticRegression()
     score_names=['precision_weighted','recall_weighted','f1_weighted','f1_micro','f1_macro','roc_auc']
     for score_name in score_names:
         scores=cross_validation.cross_val_score(clf, X, Y, cv=2, scoring=score_name)
@@ -121,29 +121,33 @@ def evaluate_baseline(fname):
     if 'line' in fname:
         print '======LINE======'
         params=line_params
+    if 'weibo' in fname:
+        website='weibo'
+    else:
+        website='zhihu'
     embedding = get_simple_embedding(fname)
-    #evaluate(get_label(1, gender_reg), embedding)
-    #evaluate(get_label(2, age_reg), embedding)
-    #evaluate(get_label(3, location_reg), embedding)
-    simple_evaluate(get_label(1, gender_reg), embedding, params[0])
-    simple_evaluate(get_label(2, age_reg), embedding, params[1])
-    simple_evaluate(get_label(3, location_reg), embedding, params[2])
+    #evaluate(get_label(website, 1, gender_reg), embedding)
+    #evaluate(get_label(website, 2, age_reg), embedding)
+    #evaluate(get_label(website, 3, location_reg), embedding)
+    simple_evaluate(get_label(website, 1, gender_reg), embedding, params[0])
+    simple_evaluate(get_label(website, 2, age_reg), embedding, params[1])
+    simple_evaluate(get_label(website, 3, location_reg), embedding, params[2])
 
 
-def evaluate_our_method(iter_count=20):
+def evaluate_our_method(website, r_count=20):
     params=[{'kernel': 'rbf', 'C': 100, 'gamma': 0.001},
             {'kernel': 'rbf', 'C': 10, 'gamma': 0.001},
             {'kernel': 'rbf', 'C': 10, 'gamma': 0.001}]
     print '======Our; Iter Count: %d======' % iter_count
     embedding = get_neibor_embedding(
-        './embedding/user_embedding_using_neibors_%d.data.json' % iter_count
+        './embedding/%s_user_embedding_using_neibors_%d.data.json' % (website,iter_count)
     )
-    #evaluate(get_label(1, gender_reg), embedding)
-    #evaluate(get_label(2, age_reg), embedding)
-    #evaluate(get_label(3, location_reg), embedding)
-    simple_evaluate(get_label(1, gender_reg), embedding, params[0])
-    #simple_evaluate(get_label(2, age_reg), embedding, params[1])
-    simple_evaluate(get_label(3, location_reg), embedding, params[2])
+    #evaluate(get_label(website, 1, gender_reg), embedding)
+    #evaluate(get_label(website, 2, age_reg), embedding)
+    #evaluate(get_label(website, 3, location_reg), embedding)
+    simple_evaluate(get_label(website, 1, gender_reg), embedding, params[0])
+    simple_evaluate(get_label(website, 2, age_reg), embedding, params[1])
+    simple_evaluate(get_label(website, 3, location_reg), embedding, params[2])
 
 
 if __name__ == '__main__':
@@ -151,7 +155,7 @@ if __name__ == '__main__':
     #evaluate_baseline('./embedding/user_embedding_using_line.data.json')
     #evaluate_our_method(iter_count=10)
     #evaluate_our_method(iter_count=15)
-    evaluate_our_method(iter_count=20)
+    evaluate_our_method('zhihu',iter_count=20)
     #evaluate_our_method(iter_count=25)
     #evaluate_our_method(iter_count=30)
     print 'Done'
