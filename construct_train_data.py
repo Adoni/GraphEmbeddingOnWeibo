@@ -199,7 +199,7 @@ def get_user_embedding_with_friends(website, iter_count):
         #user_embedding[uid].append(list(numpy.mean(e2, axis=0)))
         user_embedding[uid].append(construct_friends_embedding_with_certain_count(e2))
 
-    with open('./embedding/%s_user_embedding_using_neibors_%d.data.json' % (website,r_count),'w') as outfile:
+    with open('./embedding/%s_user_embedding_using_neibors_%d.data.json' % (website,iter_count),'w') as outfile:
         json.dump(user_embedding, outfile)
     print 'Get user embedding with friend done'
 

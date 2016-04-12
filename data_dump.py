@@ -18,12 +18,16 @@ def dump_small_graph(in_file_name):
     #small_graph中存储了first graph中所有的uid的所有朋友，这些朋友可能是first graph中的也可能是second graph中的
     #本函数将small graph读入成字典形式并存储为json格式
     print 'Dump file %s' % in_file_name
+    if 'zhihu' in in_file_name:
+        website='zhihu'
+    elif 'weibo' in in_file_name:
+        website='weibo'
     t = time.time()
     graph = dict()
     uids = set([
         line.strip().split('||')[0]
         #for line in open('./graph_data/cleaned_first_graph.data')
-        for line in open('./user_attributes.data')
+        for line in open('./%s_user_attributes.data'%website)
     ])
     with open(in_file_name) as fin:
         for line in fin:
@@ -68,14 +72,14 @@ if __name__ == '__main__':
     #dump_vector('./embedding/deepwalk_embedding.data')
     #dump_vector('./embedding/neibor_embedding_1_20.data')
     #dump_vector('./embedding/neibor_embedding_2_20.data')
-    dump_vector('./embedding/zhihu_line_embedding.data')
-    dump_vector('./embedding/zhihu_deepwalk_embedding.data')
+    #dump_vector('./embedding/zhihu_line_embedding.data')
+    #dump_vector('./embedding/zhihu_deepwalk_embedding.data')
     #dump_vector('./embedding/zhihu_neibor_embedding_1_20.data')
     #dump_vector('./embedding/zhihu_neibor_embedding_2_20.data')
     #dump(dump_graph,'./graph_data/first_graph.data')
     #dump(dump_graph,'./graph_data/reversed_first_graph.data')
-    #dump(dump_small_graph,'./graph_data/cleaned_second_graph.data')
-    #dump(dump_small_graph,'./graph_data/reversed_cleaned_second_graph.data')
+    dump(dump_small_graph,'./graph_data/cleaned_zhihu_graph.data')
+    dump(dump_small_graph,'./graph_data/reversed_cleaned_zhihu_graph.data')
     #dump(dump_vector,'./embedding/deepwalk_embedding.data')
     #dump(dump_vector,'./embedding/line_embedding.data')
     #dump(dump_vector,'./embedding/neibor_embedding_1_20.data')
