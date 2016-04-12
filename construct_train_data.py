@@ -21,14 +21,13 @@ def get_location_labels():
             labels[key] = int(line[1])
     return labels
 
-
 location_labels = get_location_labels()
 
 
 def gender_reg(v):
-    if v == '男' or v == 'm':
+    if v == '男' or v == 'm' or v=='male':
         return 0
-    elif v == '女' or v == 'f':
+    elif v == '女' or v == 'f' or v=='female':
         return 1
     else:
         return None
@@ -86,11 +85,13 @@ def load(file_names):
     return tuple(results)
 
 
-def get_user_embedding_on_simple_embedding(embedding_file, out_filename):
+def get_user_embedding_on_simple_embedding(website, embedding_method):
     uids = [
         line.strip().split('||')[0]
-        for line in open('./user_attributes.data')
+        for line in open('./%s_user_attributes.data'%website)
     ]
+    embedding_file='./embedding/%s_%s_embedding.data.json'%(website,embedding_method)
+    out_filename='./embedding/%s_user_embedding_using_%s.data.json'%(website,embedding_method)
     embedding = thread_load(embedding_file)
     user_embedding = dict()
     for uid in uids:
@@ -131,16 +132,16 @@ def construct_friends_embedding_with_certain_count(friend_embeddings):
         result.append(list(numpy.mean(friend_embeddings, axis=0)))
     return result
 
-def get_user_embedding_with_friends(iter_count):
+def get_user_embedding_with_friends(website, iter_count):
     uids = [
         line.strip().split('||')[0]
-        for line in open('./user_attributes.data')
+        for line in open('./%s_user_attributes.data'%website)
     ]
     weights=get_weights()
-    embedding_file = './embedding/neibor_embedding_1_%d.data.json' % iter_count
-    re_embedding_file = './embedding/neibor_embedding_2_%d.data.json' % iter_count
-    graph_file = './graph_data/cleaned_second_graph.data.small.json'
-    re_graph_file = './graph_data/reversed_cleaned_second_graph.data.small.json'
+    embedding_file = './embedding/%s_neibor_embedding_1_%d.data.json' % (website,iter_count)
+    re_embedding_file = './embedding/%s_neibor_embedding_2_%d.data.json' % (website,iter_count)
+    graph_file = './graph_data/cleaned_%s_graph.data.small.json'%website
+    re_graph_file = './graph_data/reversed_cleaned_%s_graph.data.small.json'%website
     graph, re_graph, embedding, re_embedding = load(
         [graph_file, re_graph_file, embedding_file, re_embedding_file]
     )
@@ -198,7 +199,7 @@ def get_user_embedding_with_friends(iter_count):
         #user_embedding[uid].append(list(numpy.mean(e2, axis=0)))
         user_embedding[uid].append(construct_friends_embedding_with_certain_count(e2))
 
-    with open('./embedding/user_embedding_using_neibors_%d.data.json' % iter_count,'w') as outfile:
+    with open('./embedding/%s_user_embedding_using_neibors_%d.data.json' % (website,r_count),'w') as outfile:
         json.dump(user_embedding, outfile)
     print 'Get user embedding with friend done'
 
@@ -208,12 +209,12 @@ def main():
     #get_user_embedding()
     #get_user_embedding_with_friends(10)
     #get_user_embedding_with_friends(15)
-    get_user_embedding_with_friends(20)
+    get_user_embedding_with_friends('zhihu',20)
     #get_user_embedding_with_friends(25)
     #get_user_embedding_with_friends(30)
     #get_user_embedding_with_friends(50)
-    #get_user_embedding_on_simple_embedding('./embedding/deepwalk_embedding.data.json','./embedding/user_embedding_using_deepwalk.data.json')
-    #get_user_embedding_on_simple_embedding('./embedding/line_embedding.data.json','./embedding/user_embedding_using_line.data.json')
+    get_user_embedding_on_simple_embedding('zhihu','deepwalk')
+    get_user_embedding_on_simple_embedding('zhihu','line')
     pass
 
 
