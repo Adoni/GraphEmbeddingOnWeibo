@@ -69,6 +69,7 @@ def reverse_graph(fname):
     fout = open(out_file_name, 'w')
     for uid, neibors in re_graph.items():
         fout.write('%s %s\n' % (uid, ' '.join(neibors)))
+    print 'Reverse done'
 
 
 def construct_graph(fname, uids):
@@ -84,17 +85,6 @@ def construct_graph(fname, uids):
             fout.write(line)
             index += 1
             bar.draw(index)
-
-
-def main():
-    uids = get_first_uids()
-    fname = 'first_graph.data'
-    construct_graph(fname, uids)
-    uids = get_second_uids()
-    fname = 'second_graph.data'
-    construct_graph(fname, uids)
-    remove_surrounding_nodes('second_graph.data')
-
 
 def construct_line_format_graph(fname):
     fout = open('line_' + fname, 'w')
@@ -115,8 +105,12 @@ def construct_my_format_graph(fname):
                 fout.write('%s %s\n' % (line[0], line[i]))
     print 'My format Done'
 
+def main():
+    construct_line_format_graph('cleaned_zhihu_graph.data')
+    construct_my_format_graph('cleaned_zhihu_graph.data')
+    construct_my_format_graph('reversed_cleaned_zhihu_graph.data')
 
 if __name__ == '__main__':
-    #main()
+    main()
     #reverse_graph('./graph_data/first_graph.data')
     print 'Done'

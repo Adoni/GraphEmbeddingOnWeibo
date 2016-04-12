@@ -20,10 +20,11 @@ def dump_small_graph(in_file_name):
     print 'Dump file %s' % in_file_name
     t = time.time()
     graph = dict()
-    uids = [
-        line.strip().split(' ')[0]
-        for line in open('./graph_data/cleaned_first_graph.data')
-    ]
+    uids = set([
+        line.strip().split('||')[0]
+        #for line in open('./graph_data/cleaned_first_graph.data')
+        for line in open('./user_attributes.data')
+    ])
     with open(in_file_name) as fin:
         for line in fin:
             pos = line.find(' ')
@@ -67,6 +68,10 @@ if __name__ == '__main__':
     #dump_vector('./embedding/deepwalk_embedding.data')
     #dump_vector('./embedding/neibor_embedding_1_20.data')
     #dump_vector('./embedding/neibor_embedding_2_20.data')
+    dump_vector('./embedding/zhihu_line_embedding.data')
+    dump_vector('./embedding/zhihu_deepwalk_embedding.data')
+    #dump_vector('./embedding/zhihu_neibor_embedding_1_20.data')
+    #dump_vector('./embedding/zhihu_neibor_embedding_2_20.data')
     #dump(dump_graph,'./graph_data/first_graph.data')
     #dump(dump_graph,'./graph_data/reversed_first_graph.data')
     #dump(dump_small_graph,'./graph_data/cleaned_second_graph.data')
@@ -81,8 +86,8 @@ if __name__ == '__main__':
     #dump(dump_vector,'./embedding/neibor_embedding_2_15.data')
     #dump(dump_vector, './embedding/neibor_embedding_1_25.data')
     #dump(dump_vector, './embedding/neibor_embedding_2_25.data')
-    dump(dump_vector, './embedding/neibor_embedding_1_30.data')
-    dump(dump_vector, './embedding/neibor_embedding_2_30.data')
+    #dump(dump_vector, './embedding/neibor_embedding_1_30.data')
+    #dump(dump_vector, './embedding/neibor_embedding_2_30.data')
     #dump(dump_vector, './embedding/neibor_embedding_1_50.data')
     #dump(dump_vector, './embedding/neibor_embedding_2_50.data')
     print 'Done'

@@ -88,8 +88,8 @@ def load(file_names):
 
 def get_user_embedding_on_simple_embedding(embedding_file, out_filename):
     uids = [
-        line.strip().split(' ')[0]
-        for line in open('./graph_data/cleaned_first_graph.data')
+        line.strip().split('||')[0]
+        for line in open('./user_attributes.data')
     ]
     embedding = thread_load(embedding_file)
     user_embedding = dict()
@@ -100,6 +100,7 @@ def get_user_embedding_on_simple_embedding(embedding_file, out_filename):
             continue
     with open(out_filename, 'w') as outfile:
         json.dump(user_embedding, outfile)
+    print 'Get simple user embedding done'
 
 
 def get_weights():
@@ -115,8 +116,8 @@ def get_weights():
     return weights
 
 def construct_friends_embedding_with_certain_count(friend_embeddings):
-    counts=[5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 350, 390]
-    counts=[1,2,3,4,5,6,7,8,9,10]+range(20,310,10)
+    #counts=[1,2,3,4,5,6,7,8,9,10]+range(20,310,10)
+    counts=[]
     result=[]
     for count in counts:
         if count<=len(friend_embeddings):
@@ -124,12 +125,16 @@ def construct_friends_embedding_with_certain_count(friend_embeddings):
             result.append(list(numpy.mean(tmp_embedding, axis=0)))
         else:
             result.append([])
+    if friend_embeddings==[]:
+        result.append([])
+    else:
+        result.append(list(numpy.mean(friend_embeddings, axis=0)))
     return result
 
 def get_user_embedding_with_friends(iter_count):
     uids = [
-        line.strip().split(' ')[0]
-        for line in open('./graph_data/cleaned_first_graph.data')
+        line.strip().split('||')[0]
+        for line in open('./user_attributes.data')
     ]
     weights=get_weights()
     embedding_file = './embedding/neibor_embedding_1_%d.data.json' % iter_count
@@ -171,6 +176,8 @@ def get_user_embedding_with_friends(iter_count):
                 e2.append(embedding[friend])
             except:
                 continue
+        if e1==[] or e2==[]:
+            continue
         #user_embedding[uid].append(list(numpy.mean(e1, axis=0)))
         user_embedding[uid].append(construct_friends_embedding_with_certain_count(e1))
         #user_embedding[uid].append(list(numpy.mean(e2, axis=0)))
@@ -184,6 +191,8 @@ def get_user_embedding_with_friends(iter_count):
                 e2.append(re_embedding[friend])
             except:
                 continue
+        if e1==[] or e2==[]:
+            continue
         #user_embedding[uid].append(list(numpy.mean(e1, axis=0)))
         user_embedding[uid].append(construct_friends_embedding_with_certain_count(e1))
         #user_embedding[uid].append(list(numpy.mean(e2, axis=0)))
@@ -191,6 +200,7 @@ def get_user_embedding_with_friends(iter_count):
 
     with open('./embedding/user_embedding_using_neibors_%d.data.json' % iter_count,'w') as outfile:
         json.dump(user_embedding, outfile)
+    print 'Get user embedding with friend done'
 
 
 def main():
