@@ -42,17 +42,19 @@ def main():
         './training_data/neibor_location_%d' % iter_count
     )
 
+
 def count_uids():
-    f=open('./graph_data/weights.data')
-    uids=[]
+    f = open('./graph_data/weights.data')
+    uids = []
     while 1:
-        line=f.readline()
+        line = f.readline()
         uids.append(line.strip())
-        if line=='':
+        if line == '':
             break
-        line=f.readline()
-        line=f.readline()
-    print len(uids)-len(set(uids))
+        line = f.readline()
+        line = f.readline()
+    print len(uids) - len(set(uids))
+
 
 if __name__ == '__main__':
     #count_uids()

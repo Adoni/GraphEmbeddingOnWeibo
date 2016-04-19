@@ -86,6 +86,7 @@ def construct_graph(fname, uids):
             index += 1
             bar.draw(index)
 
+
 def construct_line_format_graph(fname):
     fout = open('line_' + fname, 'w')
     with open(fname) as graph_file:
@@ -105,10 +106,12 @@ def construct_my_format_graph(fname):
                 fout.write('%s %s\n' % (line[0], line[i]))
     print 'My format Done'
 
+
 def main():
     construct_line_format_graph('cleaned_zhihu_graph.data')
     construct_my_format_graph('cleaned_zhihu_graph.data')
     construct_my_format_graph('reversed_cleaned_zhihu_graph.data')
+
 
 if __name__ == '__main__':
     main()

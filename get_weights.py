@@ -40,7 +40,7 @@ def dump_weight():
         #for uid in group_uids:
         #    weights.append(get_weights(uid))
         for uid, single_weight in zip(group_uids, weights):
-            if single_weight==[]:
+            if single_weight == []:
                 continue
             weight_file.write(str(uid))
             weight_file.write('\n')

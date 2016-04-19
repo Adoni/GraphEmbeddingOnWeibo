@@ -19,10 +19,13 @@ def get_neibor_embedding(fname, index):
     for uid, e in data.items():
         if len(e) < 6:
             continue
-        if e[2][index]==[] or e[3][index]==[] or e[4][index]==[] or e[5][index]==[]:
+        if e[2][index] == [] or e[3][index] == [] or e[4][index] == [] or e[5][
+            index] == []:
             continue
-        embedding[uid] = list(e[2][index]) + list(e[3][index]) + list(e[4][index]) + list(e[5][index])
+        embedding[uid] = list(e[2][index]) + list(e[3][index]) + list(e[4][
+            index]) + list(e[5][index])
     return embedding
+
 
 def simple_evaluate(labels, embedding):
     #simple_evaluate function uses default params without any params tuning
@@ -31,26 +34,37 @@ def simple_evaluate(labels, embedding):
     X = map(lambda uid: embedding[uid], uids)
     Y = map(lambda uid: labels[uid], uids)
     print '\t', dict(Counter(Y))
-    clf=LogisticRegression()
-    score_names=['precision_weighted','recall_weighted','f1_weighted','f1_micro','f1_macro','roc_auc']
+    clf = LogisticRegression()
+    score_names = [
+        'precision_weighted', 'recall_weighted', 'f1_weighted', 'f1_micro',
+        'f1_macro', 'roc_auc'
+    ]
     for score_name in score_names:
-        scores=cross_validation.cross_val_score(clf, X, Y, cv=2, scoring=score_name)
-        print("%s:\t%0.3f (+/- %0.3f)" % (score_name, scores.mean(), scores.std() * 2))
+        scores = cross_validation.cross_val_score(clf,
+                                                  X,
+                                                  Y,
+                                                  cv=2,
+                                                  scoring=score_name)
+        print("%s:\t%0.3f (+/- %0.3f)" %
+              (score_name, scores.mean(), scores.std() * 2))
     sys.stdout.flush()
+
 
 def evaluate_our_method(iter_count=20):
     print '======Our; Iter Count: %d======' % iter_count
-    counts=[5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 350, 390]
-    for index in range(0,len(counts)):
+    counts = [5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250,
+              300, 350, 390]
+    for index in range(0, len(counts)):
         embedding = get_neibor_embedding(
-        './embedding/user_embedding_using_neibors_%d.data.json' % iter_count,index
+            './embedding/user_embedding_using_neibors_%d.data.json' %
+            iter_count, index
         )
-        print index,counts[index]
+        print index, counts[index]
         #simple_evaluate(get_label(1, gender_reg), embedding)
         #simple_evaluate(get_label(2, age_reg), embedding)
         simple_evaluate(get_label(3, location_reg), embedding)
         #simple_evaluate(get_label(2, age_reg), embedding)
-    #simple_evaluate(get_label(2, age_reg), embedding)
+        #simple_evaluate(get_label(2, age_reg), embedding)
 
 
 if __name__ == '__main__':

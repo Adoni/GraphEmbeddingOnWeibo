@@ -89,6 +89,7 @@ def evaluate(labels, embedding):
 
 
 def simple_evaluate(labels, embedding, params, count=10000000):
+    import time
     # simple_evaluate function uses default params without any params tuning
     from collections import Counter
     uids = list(set(embedding.keys()) & set(labels.keys()))
@@ -98,28 +99,17 @@ def simple_evaluate(labels, embedding, params, count=10000000):
     Y = map(lambda uid: labels[uid], uids)
     print('\t', dict(Counter(Y)))
     sys.stdout.flush()
-    if params['kernel'] == 'linear':
-        clf = SVC(C=params['C'], kernel=params['kernel'])
-    else:
-        clf = SVC(
-                    C=params['C'],
-                    kernel=params['kernel'],
-                    gamma=params['gamma']
-                )
     # clf=LogisticRegression()
-    clf = SVC()
-    score_names = [
-        'precision_weighted', 'recall_weighted', 'f1_weighted', 'f1_micro',
-        'f1_macro', 'roc_auc'
-    ]  # 一些评价指标
-    for score_name in score_names:
-        scores = cross_validation.cross_val_score(clf,
-                                                  X,
-                                                  Y,
-                                                  cv=2,
-                                                  scoring=score_name)
-        print("%s:\t%0.3f (+/- %0.3f)" %
-              (score_name, scores.mean(), scores.std() * 2))
+    for data_count in [20000,40000,60000,80000,100000]:
+        print(data_count)
+        start_time=time.time()
+        clf = LogisticRegression()
+        tmp_X=X[0:data_count]
+        tmp_Y=Y[0:data_count]
+        clf.fit(tmp_X,tmp_Y)
+        print(classification_report(tmp_Y, clf.predict(tmp_X), digits=3))
+        print(time.time()-start_time)
+
     sys.stdout.flush()
 
 
@@ -155,8 +145,8 @@ def evaluate_baseline(fname, data_count):
     simple_evaluate(
         get_label(website, 1, gender_reg), embedding, params[0], data_count)
     # simple_evaluate(get_label(website, 2, age_reg), embedding, params[1])
-    simple_evaluate(
-        get_label(website, 3, location_reg), embedding, params[2], data_count)
+    # simple_evaluate(
+    #     get_label(website, 3, location_reg), embedding, params[2], data_count)
 
 
 def evaluate_our_method(website, iter_count, data_count):
@@ -185,18 +175,10 @@ def evaluate_our_method(website, iter_count, data_count):
 
 
 if __name__ == '__main__':
-    data_count = 200000
-    if sys.argv[1] == 'deepwalk':
-        evaluate_baseline(
-            './embedding/zhihu_user_embedding_using_deepwalk.data.json',
+    evaluate_baseline(
+            './embedding/weibo_user_embedding_using_deepwalk.data.json',
             data_count=data_count
-        )
-    if sys.argv[1] == 'line':
-        evaluate_baseline(
-            './embedding/zhihu_user_embedding_using_line.data.json',
-            data_count=data_count)
-    if sys.argv[1] == 'our':
-        evaluate_our_method('zhihu', iter_count=60, data_count=data_count)
+    )
     # evaluate_our_method('zhihu',iter_count=70)
     # evaluate_our_method('zhihu',iter_count=10)
     # evaluate_our_method('zhihu',iter_count=20)

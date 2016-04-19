@@ -19,16 +19,18 @@ def dump_small_graph(in_file_name):
     #本函数将small graph读入成字典形式并存储为json格式
     print 'Dump file %s' % in_file_name
     if 'zhihu' in in_file_name:
-        website='zhihu'
+        website = 'zhihu'
     elif 'weibo' in in_file_name:
-        website='weibo'
+        website = 'weibo'
     t = time.time()
     graph = dict()
-    uids = set([
-        line.strip().split('||')[0]
-        #for line in open('./graph_data/cleaned_first_graph.data')
-        for line in open('./%s_user_attributes.data'%website)
-    ])
+    uids = set(
+        [
+            line.strip().split('||')[0]
+            #for line in open('./graph_data/cleaned_first_graph.data')
+            for line in open('./%s_user_attributes.data' % website)
+        ]
+    )
     with open(in_file_name) as fin:
         for line in fin:
             pos = line.find(' ')
