@@ -90,25 +90,29 @@ def evaluate(labels, embedding):
     print()
     sys.stdout.flush()
 
-def simple_evaluate(labels, embedding, params):
+def simple_evaluate(labels, embedding, params, count=10000000):
     #simple_evaluate function uses default params without any params tuning
     from collections import Counter
     uids = list(set(embedding.keys()) & set(labels.keys()))
+    random.shuffle(uids)
+    uids=uids[0:count]
     X = map(lambda uid: embedding[uid], uids)
     Y = map(lambda uid: labels[uid], uids)
     print '\t', dict(Counter(Y))
+    sys.stdout.flush()
     if params['kernel']=='linear':
         clf=SVC(C=params['C'],kernel=params['kernel'])
     else:
         clf=SVC(C=params['C'],kernel=params['kernel'],gamma=params['gamma'])
-    clf=LogisticRegression()
+    #clf=LogisticRegression()
+    clf=SVC()
     score_names=['precision_weighted','recall_weighted','f1_weighted','f1_micro','f1_macro','roc_auc']
     for score_name in score_names:
         scores=cross_validation.cross_val_score(clf, X, Y, cv=2, scoring=score_name)
         print("%s:\t%0.3f (+/- %0.3f)" % (score_name, scores.mean(), scores.std() * 2))
     sys.stdout.flush()
 
-def evaluate_baseline(fname):
+def evaluate_baseline(fname, data_count):
     deepwalk_params=[{'kernel': 'rbf', 'C': 1000, 'gamma': 0.001},
             {'kernel': 'rbf', 'C': 100, 'gamma': 0.001},
             {'kernel': 'rbf', 'C': 10, 'gamma': 0.001}]
@@ -129,12 +133,12 @@ def evaluate_baseline(fname):
     #evaluate(get_label(website, 1, gender_reg), embedding)
     #evaluate(get_label(website, 2, age_reg), embedding)
     #evaluate(get_label(website, 3, location_reg), embedding)
-    simple_evaluate(get_label(website, 1, gender_reg), embedding, params[0])
-    simple_evaluate(get_label(website, 2, age_reg), embedding, params[1])
-    simple_evaluate(get_label(website, 3, location_reg), embedding, params[2])
+    simple_evaluate(get_label(website, 1, gender_reg), embedding, params[0], data_count)
+    #simple_evaluate(get_label(website, 2, age_reg), embedding, params[1])
+    simple_evaluate(get_label(website, 3, location_reg), embedding, params[2], data_count)
 
 
-def evaluate_our_method(website, r_count=20):
+def evaluate_our_method(website, iter_count, data_count):
     params=[{'kernel': 'rbf', 'C': 100, 'gamma': 0.001},
             {'kernel': 'rbf', 'C': 10, 'gamma': 0.001},
             {'kernel': 'rbf', 'C': 10, 'gamma': 0.001}]
@@ -145,17 +149,23 @@ def evaluate_our_method(website, r_count=20):
     #evaluate(get_label(website, 1, gender_reg), embedding)
     #evaluate(get_label(website, 2, age_reg), embedding)
     #evaluate(get_label(website, 3, location_reg), embedding)
-    simple_evaluate(get_label(website, 1, gender_reg), embedding, params[0])
-    simple_evaluate(get_label(website, 2, age_reg), embedding, params[1])
-    simple_evaluate(get_label(website, 3, location_reg), embedding, params[2])
+    simple_evaluate(get_label(website, 1, gender_reg), embedding, params[0], data_count)
+    #simple_evaluate(get_label(website, 2, age_reg), embedding, params[1])
+    simple_evaluate(get_label(website, 3, location_reg), embedding, params[2], data_count)
 
 
 if __name__ == '__main__':
-    #evaluate_baseline('./embedding/user_embedding_using_deepwalk.data.json')
-    #evaluate_baseline('./embedding/user_embedding_using_line.data.json')
-    #evaluate_our_method(iter_count=10)
-    #evaluate_our_method(iter_count=15)
-    evaluate_our_method('zhihu',iter_count=20)
-    #evaluate_our_method(iter_count=25)
-    #evaluate_our_method(iter_count=30)
+    data_count=200000
+    if sys.argv[1]=='deepwalk':
+        evaluate_baseline('./embedding/zhihu_user_embedding_using_deepwalk.data.json', data_count=data_count)
+    if sys.argv[1]=='line':
+        evaluate_baseline('./embedding/zhihu_user_embedding_using_line.data.json', data_count=data_count)
+    if sys.argv[1]=='our':
+        evaluate_our_method('zhihu',iter_count=60, data_count=data_count)
+    #evaluate_our_method('zhihu',iter_count=70)
+    #evaluate_our_method('zhihu',iter_count=10)
+    #evaluate_our_method('zhihu',iter_count=20)
+    #evaluate_our_method('zhihu',iter_count=30)
+    #evaluate_our_method('zhihu',iter_count=40)
+    #evaluate_our_method('zhihu',iter_count=50)
     print 'Done'

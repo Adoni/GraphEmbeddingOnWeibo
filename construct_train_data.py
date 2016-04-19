@@ -56,9 +56,9 @@ def location_reg(v):
         return None
 
 
-def get_label(weibsite, label_index, label_reg):
+def get_label(website, label_index, label_reg):
     labels = dict()
-    for line in open('./weibsite_user_attributes.data'):
+    for line in open('./%s_user_attributes.data'%website):
         line = line.strip().split('||')
         uid = line[0]
         label = label_reg(line[label_index])
@@ -209,12 +209,18 @@ def main():
     #get_user_embedding()
     #get_user_embedding_with_friends(10)
     #get_user_embedding_with_friends(15)
-    get_user_embedding_with_friends('zhihu',20)
+    #get_user_embedding_with_friends('zhihu',10)
+    #get_user_embedding_with_friends('zhihu',20)
+    #get_user_embedding_with_friends('zhihu',30)
+    #get_user_embedding_with_friends('zhihu',40)
+    #get_user_embedding_with_friends('zhihu',50)
+    get_user_embedding_with_friends('zhihu',60)
+    get_user_embedding_with_friends('zhihu',70)
     #get_user_embedding_with_friends(25)
     #get_user_embedding_with_friends(30)
     #get_user_embedding_with_friends(50)
-    get_user_embedding_on_simple_embedding('zhihu','deepwalk')
-    get_user_embedding_on_simple_embedding('zhihu','line')
+    #get_user_embedding_on_simple_embedding('zhihu','deepwalk')
+    #get_user_embedding_on_simple_embedding('zhihu','line')
     pass
 
 
