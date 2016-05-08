@@ -21,8 +21,24 @@ def get_location_labels():
             labels[key] = int(line[1])
     return labels
 
+def get_profession_labels():
+    labels=dict()
+    with open('./profession.label') as f_l:
+        for line in f_l:
+            line = line.strip().split(' ')
+            key = line[0]
+            labels[key] = int(line[1])
+    return labels
+
+def outputacm_reg(v):
+    label_candidates=['AAAI','CIKM','ICML', 'KDD', 'NIPS', 'SIGIR', ' WWW']
+    try:
+        return label_candidates.index(v)
+    except:
+        return None
 
 location_labels = get_location_labels()
+profession_labels=get_profession_labels()
 
 
 def gender_reg(v):
@@ -56,6 +72,11 @@ def location_reg(v):
     except:
         return None
 
+def profession_reg(v):
+    try:
+        return profession_labels[v]
+    except:
+        return None
 
 def get_label(website, label_index, label_reg):
     labels = dict()
@@ -151,34 +172,40 @@ def get_user_embedding_with_friends(website, iter_count):
     re_embedding_file = './embedding/%s_neibor_embedding_2_%d.data.json' % (
         website, iter_count
     )
-    graph_file = './graph_data/cleaned_%s_graph.data.small.json' % website
-    re_graph_file = './graph_data/reversed_cleaned_%s_graph.data.small.json' % website
+    graph_file = './graph_data/%s_graph.data.small.json' % website
+    re_graph_file = './graph_data/reversed_%s_graph.data.small.json' % website
     graph, re_graph, embedding, re_embedding = load(
         [graph_file, re_graph_file, embedding_file, re_embedding_file]
     )
+    print(len(set(uids)&set(embedding)))
+    print(len(set(uids)&set(re_embedding)))
     #graph,re_graph=load([graph_file,re_graph_file])
     user_embedding = dict()
     print 'Start'
     for index, uid in enumerate(uids):
-        if uid not in graph:
-            print 'H1', uid
-            continue
-        if uid not in re_graph:
-            print 'H2', uid
-            continue
-        if uid not in embedding:
-            print 'H3', uid
-            continue
-        if uid not in re_embedding:
-            print 'H4', uid
-            continue
+        #if uid not in embedding:
+        #    print 'H3', uid
+        #    continue
+        #if uid not in re_embedding:
+        #    print 'H4', uid
+        #    continue
 
         user_embedding[uid] = []
 
         #1. append user's embedding
-        user_embedding[uid].append(embedding[uid])
+        if uid not in embedding:
+            user_embedding[uid].append([0.0]*128)
+        else:
+            user_embedding[uid].append(embedding[uid])
         #2. append user's reversed embedding
-        user_embedding[uid].append(re_embedding[uid])
+        if uid not in re_embedding:
+            user_embedding[uid].append([0.0]*128)
+        else:
+            user_embedding[uid].append(re_embedding[uid])
+        if uid not in graph:
+            #print 'H1', uid
+            continue
+        continue
         #3. append user's embedding from who he or her follows
         e1 = []
         e2 = []
@@ -199,6 +226,9 @@ def get_user_embedding_with_friends(website, iter_count):
             construct_friends_embedding_with_certain_count(e2)
         )
         #4. append user's embedding from who he or her follows
+        if uid not in re_graph:
+            #print 'H2', uid
+            continue
         e1 = []
         e2 = []
         for friend in re_graph[uid]:
@@ -218,6 +248,7 @@ def get_user_embedding_with_friends(website, iter_count):
             construct_friends_embedding_with_certain_count(e2)
         )
 
+    print(len(user_embedding))
     with open(
         './embedding/%s_user_embedding_using_neibors_%d.data.json' %
         (website, iter_count), 'w'
@@ -236,13 +267,24 @@ def main():
     #get_user_embedding_with_friends('zhihu',30)
     #get_user_embedding_with_friends('zhihu',40)
     #get_user_embedding_with_friends('zhihu',50)
-    get_user_embedding_with_friends('zhihu', 60)
-    get_user_embedding_with_friends('zhihu', 70)
+    #get_user_embedding_with_friends('zhihu',50)
+    #get_user_embedding_with_friends('zhihu',60)
+    get_user_embedding_with_friends('zhihu',25650)
+    get_user_embedding_with_friends('zhihu',25690)
+    #get_user_embedding_with_friends('outputacm', 1000)
+    #get_user_embedding_with_friends('outputacm', 150)
+    #get_user_embedding_with_friends('outputacm', 250)
+    #get_user_embedding_with_friends('dblp', 10)
+    #get_user_embedding_with_friends('dblp', 20)
+    #get_user_embedding_with_friends('dblp', 40)
+    #get_user_embedding_with_friends('dblp', 60)
+    #get_user_embedding_with_friends('dblp', 80)
+    #get_user_embedding_with_friends('dblp', 10)
     #get_user_embedding_with_friends(25)
     #get_user_embedding_with_friends(30)
     #get_user_embedding_with_friends(50)
-    #get_user_embedding_on_simple_embedding('zhihu','deepwalk')
-    #get_user_embedding_on_simple_embedding('zhihu','line')
+    #get_user_embedding_on_simple_embedding('weibo','deepwalk')
+    #get_user_embedding_on_simple_embedding('dblp','line')
     pass
 
 

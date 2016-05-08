@@ -25,14 +25,15 @@ def dump_for_cpp(labels, embedding, fname):
 
 
 def main():
-    iter_count = 20
-    fname = './embedding/user_embedding_using_neibors_%d.data.json' % iter_count
+    iter_count = 150
+    fname = './embedding/dblp_user_embedding_using_neibors_%d.data.json' % iter_count
     #embedding=get_simple_embedding(fname)
     embedding = get_neibor_embedding(fname)
     dump_for_cpp(
-        get_label(1, gender_reg), embedding,
+        get_label('outputacm', 1, outputacm_reg), embedding,
         './training_data/neibor_gender_%d' % iter_count
     )
+    return
     dump_for_cpp(
         get_label(2, age_reg), embedding,
         './training_data/neibor_age_%d' % iter_count

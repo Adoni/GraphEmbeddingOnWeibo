@@ -3,6 +3,7 @@ from construct_train_data import gender_reg
 from construct_train_data import age_reg
 from construct_train_data import location_reg
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklearn import cross_validation
 from sklearn.svm import SVC
 from sklearn.grid_search import GridSearchCV
@@ -100,15 +101,21 @@ def simple_evaluate(labels, embedding, params, count=10000000):
     print('\t', dict(Counter(Y)))
     sys.stdout.flush()
     # clf=LogisticRegression()
+    test_X=X[-20000:]
+    test_Y=Y[-20000:]
     for data_count in [20000,40000,60000,80000,100000]:
         print(data_count)
         start_time=time.time()
-        clf = LogisticRegression()
+        #clf = LogisticRegression()
+        #clf = SVC(kernel='linear')
+        clf=RandomForestClassifier(n_estimators=1000)
+        #clf=SVC()
         tmp_X=X[0:data_count]
         tmp_Y=Y[0:data_count]
         clf.fit(tmp_X,tmp_Y)
-        print(classification_report(tmp_Y, clf.predict(tmp_X), digits=3))
+        print(classification_report(test_Y, clf.predict(test_X), digits=3))
         print(time.time()-start_time)
+        sys.stdout.flush()
 
     sys.stdout.flush()
 
@@ -177,7 +184,7 @@ def evaluate_our_method(website, iter_count, data_count):
 if __name__ == '__main__':
     evaluate_baseline(
             './embedding/weibo_user_embedding_using_deepwalk.data.json',
-            data_count=data_count
+            data_count=1000000
     )
     # evaluate_our_method('zhihu',iter_count=70)
     # evaluate_our_method('zhihu',iter_count=10)

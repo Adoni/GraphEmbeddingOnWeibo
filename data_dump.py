@@ -20,8 +20,12 @@ def dump_small_graph(in_file_name):
     print 'Dump file %s' % in_file_name
     if 'zhihu' in in_file_name:
         website = 'zhihu'
-    elif 'weibo' in in_file_name:
+    if 'weibo' in in_file_name:
         website = 'weibo'
+    if 'dblp' in in_file_name:
+        website = 'dblp'
+    if 'outputacm' in in_file_name:
+        website = 'outputacm'
     t = time.time()
     graph = dict()
     uids = set(
@@ -69,43 +73,11 @@ def dump(f, in_file_name):
 
 
 if __name__ == '__main__':
-    #dump_graph('./graph_data/cleaned_second_graph.data')
-    #dump_vector('./embedding/line_embedding.data')
-    #dump_vector('./embedding/deepwalk_embedding.data')
-    #dump_vector('./embedding/neibor_embedding_1_20.data')
-    #dump_vector('./embedding/neibor_embedding_2_20.data')
-    #dump_vector('./embedding/zhihu_line_embedding.data')
-    #dump_vector('./embedding/zhihu_deepwalk_embedding.data')
-    #dump_vector('./embedding/zhihu_neibor_embedding_1_10.data')
-    #dump_vector('./embedding/zhihu_neibor_embedding_1_20.data')
-    #dump_vector('./embedding/zhihu_neibor_embedding_1_30.data')
-    #dump_vector('./embedding/zhihu_neibor_embedding_1_40.data')
-    #dump_vector('./embedding/zhihu_neibor_embedding_1_50.data')
-    dump_vector('./embedding/zhihu_neibor_embedding_1_60.data')
-    dump_vector('./embedding/zhihu_neibor_embedding_1_70.data')
-    #dump_vector('./embedding/zhihu_neibor_embedding_2_10.data')
-    #dump_vector('./embedding/zhihu_neibor_embedding_2_20.data')
-    #dump_vector('./embedding/zhihu_neibor_embedding_2_30.data')
-    #dump_vector('./embedding/zhihu_neibor_embedding_2_40.data')
-    #dump_vector('./embedding/zhihu_neibor_embedding_2_50.data')
-    dump_vector('./embedding/zhihu_neibor_embedding_2_60.data')
-    dump_vector('./embedding/zhihu_neibor_embedding_2_70.data')
-    #dump(dump_graph,'./graph_data/first_graph.data')
-    #dump(dump_graph,'./graph_data/reversed_first_graph.data')
-    #dump(dump_small_graph,'./graph_data/cleaned_zhihu_graph.data')
-    #dump(dump_small_graph,'./graph_data/reversed_cleaned_zhihu_graph.data')
-    #dump(dump_vector,'./embedding/deepwalk_embedding.data')
-    #dump(dump_vector,'./embedding/line_embedding.data')
-    #dump(dump_vector,'./embedding/neibor_embedding_1_20.data')
-    #dump(dump_vector,'./embedding/neibor_embedding_2_20.data')
-    #dump(dump_vector,'./embedding/neibor_embedding_1_10.data')
-    #dump(dump_vector,'./embedding/neibor_embedding_2_10.data')
-    #dump(dump_vector,'./embedding/neibor_embedding_1_15.data')
-    #dump(dump_vector,'./embedding/neibor_embedding_2_15.data')
-    #dump(dump_vector, './embedding/neibor_embedding_1_25.data')
-    #dump(dump_vector, './embedding/neibor_embedding_2_25.data')
-    #dump(dump_vector, './embedding/neibor_embedding_1_30.data')
-    #dump(dump_vector, './embedding/neibor_embedding_2_30.data')
-    #dump(dump_vector, './embedding/neibor_embedding_1_50.data')
-    #dump(dump_vector, './embedding/neibor_embedding_2_50.data')
+    #dump_small_graph('./graph_data/dblp_graph.data')
+    #dump_small_graph('./graph_data/reversed_dblp_graph.data')
+    #dump(dump_vector,'./embedding/dblp_line_embedding.data')
+    for i in [25690]:
+        print(i)
+        dump(dump_vector, './embedding/zhihu_neibor_embedding_1_%d.data'%i)
+        dump(dump_vector, './embedding/zhihu_neibor_embedding_2_%d.data'%i)
     print 'Done'

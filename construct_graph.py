@@ -34,7 +34,15 @@ def remove_surrounding_nodes(fname):
     print 'Start'
     uids = [line.split(' ')[0] for line in open(fname)]
     uids = set(uids)
-    fout = open('cleaned_' + fname, 'w')
+    if '/' in fname:
+        out_file_name = '/'.join(
+            fname.split(
+                '/'
+            )[:-1]
+        ) + '/cleaned_' + fname.split('/')[-1]
+    else:
+        out_file_name = 'cleaned_' + fname
+    fout = open(out_file_name, 'w')
     bar = progress_bar(len(uids))
     for index, line in enumerate(open(fname)):
         #bar.draw(index+1)
@@ -61,6 +69,11 @@ def reverse_graph(fname):
     with open(fname) as graph_file:
         for line in graph_file:
             line = line.strip().split(' ')
+            for uid in line[0:]:
+                re_graph[uid] = []
+    with open(fname) as graph_file:
+        for line in graph_file:
+            line = line.strip().split(' ')
             for uid in line[1:]:
                 try:
                     re_graph[uid].append(line[0])
@@ -68,6 +81,8 @@ def reverse_graph(fname):
                     re_graph[uid] = [line[0]]
     fout = open(out_file_name, 'w')
     for uid, neibors in re_graph.items():
+        #if neibors==[]:
+        #    neibors.append('RNone')
         fout.write('%s %s\n' % (uid, ' '.join(neibors)))
     print 'Reverse done'
 
@@ -88,7 +103,16 @@ def construct_graph(fname, uids):
 
 
 def construct_line_format_graph(fname):
-    fout = open('line_' + fname, 'w')
+    if '/' in fname:
+        out_file_name = '/'.join(
+            fname.split(
+                '/'
+            )[:-1]
+        ) + '/line_' + fname.split('/')[-1]
+    else:
+        out_file_name = 'line_' + fname
+    print out_file_name
+    fout = open(out_file_name, 'w')
     with open(fname) as graph_file:
         for line in graph_file:
             line = line.strip().split(' ')
@@ -98,7 +122,15 @@ def construct_line_format_graph(fname):
 
 
 def construct_my_format_graph(fname):
-    fout = open('my_' + fname, 'w')
+    if '/' in fname:
+        out_file_name = '/'.join(
+            fname.split(
+                '/'
+            )[:-1]
+        ) + '/my_' + fname.split('/')[-1]
+    else:
+        out_file_name = 'my_' + fname
+    fout = open(out_file_name, 'w')
     with open(fname) as graph_file:
         for line in graph_file:
             line = line.strip().split(' ')
@@ -108,9 +140,10 @@ def construct_my_format_graph(fname):
 
 
 def main():
-    construct_line_format_graph('cleaned_zhihu_graph.data')
-    construct_my_format_graph('cleaned_zhihu_graph.data')
-    construct_my_format_graph('reversed_cleaned_zhihu_graph.data')
+    #construct_line_format_graph('./graph_data/dblp_graph.data')
+    reverse_graph('./graph_data/dblp_graph.data')
+    construct_my_format_graph('./graph_data/dblp_graph.data')
+    construct_my_format_graph('./graph_data/reversed_dblp_graph.data')
 
 
 if __name__ == '__main__':
